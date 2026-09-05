@@ -15,7 +15,7 @@ source:
 build:
   number: 2
   noarch: python
-  script: ${{ PYTHON }} -m pip install . -vv
+  script: ${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
   python:
     entry_points:
       - psiflow-train-nequip = psiflow.models.train_nequip:main
@@ -28,10 +28,10 @@ build:
 requirements:
   build:
   host:
-    - python >=3.6
+    - python ${{ python_min }}.*
     - pip
   run:
-    - python >=3.6
+    - python >=${{ python_min }}
     - ase >=3.22.1
     - pyyaml >=6.0
     - numpy >=1.22.3
@@ -44,7 +44,9 @@ tests:
       imports:
         - psiflow
       pip_check: true
-      python_version: ${{ python_min }}.*
+      python_version:
+        - ${{ python_min }}
+        - "*"
   - requirements:
       run:
         - pip
