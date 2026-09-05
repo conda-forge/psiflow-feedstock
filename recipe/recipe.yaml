@@ -1,0 +1,85 @@
+schema_version: 1
+
+context:
+  name: psiflow
+  version: "3.0.4"
+
+package:
+  name: ${{ name|lower }}
+  version: ${{ version }}
+
+source:
+  url: https://github.com/molmod/psiflow/archive/v${{ version }}.tar.gz
+  sha256: 5536258606c30ccad47499328df522bbaa5c2a2b3362711323b309e99e90aaa5
+
+build:
+  number: 2
+  noarch: python
+  script: ${{ PYTHON }} -m pip install . -vv
+  python:
+    entry_points:
+      - psiflow-train-nequip = psiflow.models.train_nequip:main
+      - psiflow-deploy-nequip = psiflow.models.deploy_nequip:main
+      - psiflow-train-mace = psiflow.models.train_mace:main
+      - psiflow-md-yaff = psiflow.walkers.molecular_dynamics_yaff:main
+      - psiflow-md-openmm = psiflow.walkers.molecular_dynamics_openmm:main
+      - psiflow-test = psiflow.test:main
+
+requirements:
+  build:
+  host:
+    - python >=3.6
+    - pip
+  run:
+    - python >=3.6
+    - ase >=3.22.1
+    - pyyaml >=6.0
+    - numpy >=1.22.3
+    - wandb >=0.14.0
+    - pymatgen >=2023.3.23
+    - parsl ==2023.08.28
+
+tests:
+  - python:
+      imports:
+        - psiflow
+      pip_check: true
+      python_version: ${{ python_min }}.*
+  - requirements:
+      run:
+        - pip
+        - pytorch
+        - e3nn
+        - nequip
+        - torch-ema
+        - pymace
+        - yaff
+        - mdtraj
+        - openmm
+        - openmm-ml
+        - colorcet
+        - cp2k-input-tools
+    script:
+      - psiflow-train-nequip --help
+      - psiflow-md-yaff --help
+      - psiflow-md-openmm --help
+
+about:
+  summary: Interatomic potential development library
+  description: |
+    Psiflow is a modular and scalable library for developing interatomic
+    potentials. It uses Parsl to interface popular trainable interaction
+    potentials with quantum chemistry software, and is designed to support
+    computational workflows on hundreds or thousands of nodes. Psiflow is
+    designed as an end-to-end framework; it can orchestrate all
+    computational components between an initial atomic structure and the
+    final trained potential.
+  license: MIT
+  license_file: LICENSE
+  homepage: https://molmod.github.io/psiflow
+  repository: https://github.com/molmod/psiflow
+  documentation: https://molmod.github.io/psiflow
+
+extra:
+  recipe-maintainers:
+    - jan-janssen
