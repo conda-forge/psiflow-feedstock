@@ -1,5 +1,5 @@
 {% set name = "psiflow" %}
-{% set version = "3.0.4" %}
+{% set version = "4.0.0-final" %}
 
 package:
   name: {{ name|lower }}
@@ -7,12 +7,12 @@ package:
 
 source:
   url: https://github.com/molmod/psiflow/archive/v{{ version }}.tar.gz
-  sha256: 5536258606c30ccad47499328df522bbaa5c2a2b3362711323b309e99e90aaa5
+  sha256: 0b846d72bf06b382dd24d533edad473606cfa3550e645889c1a2b7fd65886844
 
 build:
   noarch: python
   script: {{ PYTHON }} -m pip install . -vv
-  number: 1
+  number: 0
   entry_points:
     - psiflow-train-nequip = psiflow.models.train_nequip:main
     - psiflow-deploy-nequip = psiflow.models.deploy_nequip:main
@@ -50,7 +50,7 @@ test:
     - openmm
     - openmm-ml
     - colorcet
-    - cp2k-input-tools 
+    - cp2k-input-tools
   commands:
     - pip check
     - psiflow-train-nequip --help
